@@ -1,0 +1,104 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage{booktabs}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{longtable}
+\usepackage{makecell}  % format column headings using kable
+
+\begin{document}
+<<knitrOptions,echo=FALSE>>=
+# Clear the environment
+ rm(list=ls())
+# Global knitr options
+ knitr::opts_chunk$set(
+  results='asis',
+  eval=TRUE,
+  warning=FALSE,
+  include=TRUE,
+  echo=FALSE,
+  message=FALSE
+ )
+@
+
+<<Setup>>=
+# Load libraries
+ library(kableExtra)
+ library(xtable)
+ library(knitr)
+ library(dplyr)
+@
+
+\section{Format and print the table}
+<<xtable>>=
+  setwd("Z:/R/0.3 Results/AUC")
+aucTable <- function(partition){
+  df <- data.frame(model = c("Decision Trees", "Random Forest", "Gradient Boosting",
+                                "Support Vector Machine", "Auto Neural Network", 
+                                "Bayesian Network Classifier"),
+                   abb = c("rpart", "randomforest", "xgb", "svm", "ann", "bnc"))
+  files <- list.files()
+  saved_files <- sort(files[grep(paste0("_", partition ,".txt$"), files)])
+  se1 <- saved_files[1:3]
+  max <- saved_files[4:6]
+  auc_df_se1 <- NULL
+  auc_df_max <- NULL
+  for (i in 1:length(se1)){
+    modelname <- regexpr("_\\w*[_]", se1[i])
+    modelname <- substring(se1[i], modelname[1], modelname[1] + 
+                              attr(modelname, "match.length") - 1)
+    modelname <- gsub("_", "", modelname)
+    
+    modelname <- factor(modelname, levels = df$abb, labels = df$model)
+    
+    aucse1 <- read.table(se1[i], header = TRUE, sep = " ", dec = ".")
+    aucmax <- read.table(max[i], header = TRUE, sep = " ", dec = ".")
+    
+    aucse1$Model <- modelname
+    aucmax$Model <- modelname
+    
+    auc_df_se1 <- rbind(auc_df_se1, relocate(aucse1, Model, .after = Outcomes))
+    auc_df_max <- rbind(auc_df_max, relocate(aucmax, Model, .after = Outcomes))
+  }
+  outcomes <- unique(auc_df_se1$Outcomes)
+  for (i in 1:length(outcomes)){
+    subset_se1 <- auc_df_se1[auc_df_se1$Outcomes == outcomes[i], ]
+    subset_max <- auc_df_max[auc_df_max$Outcomes == outcomes[i], ]
+    latexCode_se1 <- xtable(subset_se1, 
+                            caption = paste("Table of AUC for", gsub("_", " ", outcomes[i]),
+                                            "Partition", partition, 
+                                            "under 1 SE Selected Variables"),
+                            digits = c(0, 0, 0, 4, 4, 4))
+    latexCode_max <- xtable(subset_max, 
+                            caption = paste("Table of AUC for", gsub("_", " ", outcomes[i]),
+                                            "Partition", partition, 
+                                            "under Max AUC Selected Variables"),
+                            digits = c(0, 0, 0, 4, 4 ,4))
+    
+    print(latexCode_se1,
+       size='small',
+       caption.placement='top',
+       floating=FALSE,
+       include.rownames = FALSE,
+       booktabs=TRUE,
+       hline.after=c(-1), 
+       tabular.environment="longtable"
+      )
+    
+    print(latexCode_max,
+       size='small',
+       caption.placement='top',
+       floating=FALSE,
+       include.rownames = FALSE,  
+       booktabs=TRUE,
+       hline.after=c(-1), 
+       tabular.environment="longtable"
+      )
+  }
+
+}
+ 
+aucTable(1)
+aucTable(2)
+aucTable(3)
+@
+
+\end{document}
