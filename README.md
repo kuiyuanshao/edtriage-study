@@ -42,31 +42,9 @@ additional `part_m3_los48h` partition is created by the scripts in this reposito
 
 ## Data and execution
 
-Clinical data, fitted models and generated results are not included. The scripts
-retain their original dataset object names, saved-file names and output directory
-conventions so existing analysis files remain compatible.
-
-Before running an analysis script, set the working directory to the repository
-root. Start each script from that directory again, since several scripts change
-the working directory internally. Source the plotting functions before using the
-exploratory plotting examples.
-
-The original analysis expects:
-
-- A SAS cohort named `cohort_29nov2022.sas7bdat` and `formats.sas7bcat`.
-- Prepared datasets under `RData/Analysis Datasets/`.
-- LASSO results under `RData/Trained Models/Variable Selection/`.
-- Model outputs under `RData/Trained Models/CART/`, `RF/`, `SVM/` and `XGB/`.
-
-These are historical research scripts and require the original data and some
-manual setup. In particular, the SAS import derives its input location from the
-original `0.2 Code` directory layout; the random forest refitting section uses a
-`Y:/` path; and the AUC report reads tables from a `Z:/` path. The import also
-expects a `cohort_29nov2022` object when saving, although its read step assigns
-`cohort_eligible`. The plotting example contains session-dependent objects and
-unfinished expressions. Review these sections before execution. The AUC report
-retains its original file-selection assumptions and is not a general collector
-for every model output.
+Clinical data, fitted models and generated results are not included. Running the
+scripts requires the original study data and adjustments to local paths and
+session-specific objects. Start each analysis script from the repository root.
 
 ## Requirements
 
