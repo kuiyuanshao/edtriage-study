@@ -40,12 +40,6 @@ ICU admission and the 48-hour length-of-stay outcome. They use the existing
 `part_m1`, `part_m2` and outcome-specific `part_m3_*` partition columns. Only the
 additional `part_m3_los48h` partition is created by the scripts in this repository.
 
-## Data and execution
-
-Clinical data, fitted models and generated results are not included. Running the
-scripts requires the original study data and adjustments to local paths and
-session-specific objects. Start each analysis script from the repository root.
-
 ## Requirements
 
 R with `pacman` installed. Individual scripts declare their packages through
@@ -54,23 +48,6 @@ R with `pacman` installed. Individual scripts declare their packages through
 The SVM uses `doMC`, and some tuning scripts use multicore processing; these
 require a compatible operating system. Excel export uses the Java-based `xlsx`
 package. The `.Rnw` report also requires `knitr`, `xtable`, `kableExtra` and LaTeX.
-
-## Previous filenames
-
-| Previous name | Current path |
-| --- | --- |
-| `readSASData.R` | `01_import_sas_data.R` |
-| `part_m3_LOS48h.R` | `02_create_los48h_partition.R` |
-| `variableCheck.R` | `03_clean_predictors.R` |
-| `variableSelection.R` | `04_select_lasso_predictors.R` |
-| `fitCART.R` | `05_train_cart.R` |
-| `fitRF.R` | `05_train_random_forest.R` |
-| `fitSVM.R` | `05_train_svm.R` |
-| `fitXGBOOST.R` | `05_train_xgboost.R` |
-| `saveVariables.R` | `06_export_lasso_results.R` |
-| `aucTables.Rnw` | `07_generate_auc_tables.Rnw` |
-| `plotFunctions.R` | `utils/calibration_roc_functions.R` |
-| `plotExamples.R` | `examples/plot_calibration_roc.R` |
 
 ## License
 
